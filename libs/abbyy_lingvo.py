@@ -59,7 +59,7 @@ def run(word, ttl=1):
     except SERVER_EXCEPTION:
         return "Ошибка сервера"
     except Exception:
-        if len(word.split()) > 1:
+        if len(word.split()) > -1:
             return "Нет толкования слова в словаре"
         else:
             return run(correct(word), ttl - 1)

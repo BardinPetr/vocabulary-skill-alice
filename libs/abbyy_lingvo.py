@@ -21,7 +21,9 @@ def get_token():
 tk = get_token()
 
 
-def run(word):
+def run(word, ttl=1):
+    if ttl == -1:
+        return "Нет толкования слова в словаре"
     search_params = {"text": word,
                      "srcLang": 1049,
                      "dstLang": 1049
@@ -30,41 +32,19 @@ def run(word):
         response = requests.get(api_home + "v1/Translation", params=search_params,
                                 headers={"Authorization": "Bearer {}".format(tk)}, verify=False)
         data = response.json()
-        response_json = response.json()
         text = ""
-        if not data:
-            return 'Описание недоступно.'
         for el in data[0].get('Body', []):
             items = el.get('Items')
             if items:
-
                 for item in items:
-                    '''
-                    while item.get("Markup", []) == []:
-                        item = item["Markup"]
-                    print(item)
-                    if node.get('Node') != 'Text':
-                        continue
-                    if node.get('IsOptional'):
-                        continue
-                    text = node.get('Text')
-                    return '{} - это {}'.format(word, text)
-                    '''
                     for mrk in item.get('Markup', []):
                         for node in mrk.get('Markup', []):
-
-                            #    print(15)
-                            #    for mrk2 in item.get('Markup', []):
-                            #        # pprint(mrk)
-                            #        for node in mrk2.get('Markup', []):
-                            #            print(node)
                             if node.get('Node') != 'Text':
                                 continue
                             if node.get('IsOptional'):
                                 continue
                             text = node.get('Text')
                             return '{} - это {}'.format(word, text)
-
             else:
                 for node in el.get('Markup', []):
                     if node.get('Node') != 'Text':
@@ -77,7 +57,7 @@ def run(word):
     except SERVER_EXCEPTION:
         return "Ошибка сервера"
     except Exception:
-        return "Нет толкования слова в словаре"
+        return run(correct(word), ttl - 1)
 
 
 def correct(word):

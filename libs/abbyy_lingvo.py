@@ -53,6 +53,8 @@ def run(word, ttl=1):
                     return '{} - это {}'.format(word, text)
         if response.status_code != 200:
             raise SERVER_EXCEPTION
+        if len(text.strip()) == 0:
+            raise Exception
         return '{} - это {}'.format(word, text)
     except SERVER_EXCEPTION:
         return "Ошибка сервера"

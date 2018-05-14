@@ -57,8 +57,8 @@ def run(word, ttl=1):
     except SERVER_EXCEPTION:
         return "Ошибка сервера"
     except Exception:
-        return run(correct(word), ttl - 1)
-
+        #return run(correct(word), ttl - 1)
+        return "Нет толкования слова в словаре"
 
 def correct(word):
     search_params = {"text": word,

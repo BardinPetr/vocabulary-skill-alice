@@ -23,7 +23,7 @@ def handle_dialog(request, response, user_storage):
 
 
 def norm(x):
-    return morph.parse(x)[0].normal_form
+    return ' '.join(map(lambda y: morph.parse(y)[0].normal_form, x.split()))
 
 
 def extract_request(x, s):

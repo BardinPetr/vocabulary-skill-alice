@@ -57,8 +57,11 @@ def run(word, ttl=1):
     except SERVER_EXCEPTION:
         return "Ошибка сервера"
     except Exception:
-        #return run(correct(word), ttl - 1)
-        return "Нет толкования слова в словаре"
+        if len(word.split()) > 1:
+            return "Нет толкования слова в словаре"
+        else:
+            return run(correct(word), ttl - 1)
+
 
 def correct(word):
     search_params = {"text": word,
@@ -71,6 +74,7 @@ def correct(word):
         if response.status_code != 200:
             raise SERVER_EXCEPTION
         response_json = response.json()[0]
-        print(response_json)
+        return response_json
     except Exception as e:
         print(e)
+        return word

@@ -2,3 +2,4 @@ Flask==0.12.2
 requests
 apiai
 pymorphy2
+gunicorn

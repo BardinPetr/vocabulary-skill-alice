@@ -20,23 +20,57 @@ def run(word):
     try:
         response = requests.get(api_home + "v1/Translation", params=search_params,
                                 headers={"Authorization": "Bearer {}".format(get_token())}, verify=False)
+        data = response.json()
+        response_json = response.json()
+        text = ""
+        if not data:
+            text = 'Описание недоступно.'
+            return text
+        for el in data[0].get('Body', []):
+            items = el.get('Items')
+            if items:
+
+                for item in items:
+                    '''
+                    while item.get("Markup", []) == []:
+                        item = item["Markup"]
+                    print(item)
+                    if node.get('Node') != 'Text':
+                        continue
+                    if node.get('IsOptional'):
+                        continue
+                    text = node.get('Text')
+                    return text
+                    '''
+                    for mrk in item.get('Markup', []):
+                        for node in mrk.get('Markup', []):
+
+                            #    print(15)
+                            #    for mrk2 in item.get('Markup', []):
+                            #        # pprint(mrk)
+                            #        for node in mrk2.get('Markup', []):
+                            #            print(node)
+                            if node.get('Node') != 'Text':
+                                continue
+                            if node.get('IsOptional'):
+                                continue
+                            text = node.get('Text')
+                            return text
+
+            else:
+                for node in el.get('Markup', []):
+                    if node.get('Node') != 'Text':
+                        continue
+                    text = node.get('Text')
+                    return text
         if response.status_code != 200:
             raise SERVER_EXCEPTION
-        response_json = response.json()
-        pprint(response_json)
-        text = response_json[0]["Body"][1]["Items"][0]["Markup"][0]["Markup"][0]["Text"]
         return text
     except SERVER_EXCEPTION:
         return "Ошибка сервера"
     except Exception:
         return "Нет толкования слова в словаре"
 
-
-def get_token():
-    token = requests.post(api_home + "v1.1/authenticate", headers={"Authorization": "Basic {}".format(api_key)},
-                          verify=False)
-    return token.text
-#print(run("куст"))
 
 def correct(word):
     search_params = {"text": word,
@@ -52,3 +86,9 @@ def correct(word):
         print(response_json)
     except Exception as e:
         print(e)
+
+
+def get_token():
+    token = requests.post(api_home + "v1.1/authenticate", headers={"Authorization": "Basic {}".format(api_key)},
+                          verify=False)
+    return token.text

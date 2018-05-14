@@ -36,5 +36,19 @@ def get_token():
     token = requests.post(api_home + "v1.1/authenticate", headers={"Authorization": "Basic {}".format(api_key)},
                           verify=False)
     return token.text
-print(run("куст"))
+#print(run("куст"))
 
+def correct(word):
+    search_params = {"text": word,
+                     "srcLang": 1049,
+                     "dstLang": 1049
+                     }
+    try:
+        response = requests.get(api_home + "v1/Suggests", params=search_params,
+                                headers={"Authorization": "Bearer {}".format(get_token())}, verify=False)
+        if response.status_code != 200:
+            raise SERVER_EXCEPTION
+        response_json = response.json()[0]
+        print(response_json)
+    except Exception as e:
+        print(e)

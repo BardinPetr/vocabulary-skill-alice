@@ -6,14 +6,14 @@ from libs.alice_sdk import AliceRequest, AliceResponse
 from vocabulary import handle_dialog
 from flask import Flask, request
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 logging.basicConfig(level=logging.DEBUG)
 
 session_storage = {}
 
 
-@app.route("/", methods=['POST'])
+@application.route("/", methods=['POST'])
 def main():
     alice_request = AliceRequest(request.json)
     logging.info('Request: {}'.format(alice_request))
@@ -31,7 +31,7 @@ def main():
     return alice_response.dumps()
 
 
-alice_app = app
+alice_app = application
 
 if __name__ == '__main__':
-    app.run()
+    application.run()

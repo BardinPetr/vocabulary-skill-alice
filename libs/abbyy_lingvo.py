@@ -12,6 +12,15 @@ api_home = 'https://developers.lingvolive.com/api/'
 api_key = 'MmI3MWMyYzQtZGE0YS00OWJhLTllYmEtYWQ5OTI0YzlhMjA2OmFjZTA3OGQ3MzNlZTRkYmI5ZTk2NmEwZThiOGRmMGRl'
 
 
+def get_token():
+    token = requests.post(api_home + "v1.1/authenticate", headers={"Authorization": "Basic {}".format(api_key)},
+                          verify=False)
+    return token.text
+
+
+tk = get_token()
+
+
 def run(word):
     search_params = {"text": word,
                      "srcLang": 1049,
@@ -19,7 +28,7 @@ def run(word):
                      }
     try:
         response = requests.get(api_home + "v1/Translation", params=search_params,
-                                headers={"Authorization": "Bearer {}".format(get_token())}, verify=False)
+                                headers={"Authorization": "Bearer {}".format(tk)}, verify=False)
         data = response.json()
         response_json = response.json()
         text = ""
@@ -79,16 +88,10 @@ def correct(word):
                      }
     try:
         response = requests.get(api_home + "v1/Suggests", params=search_params,
-                                headers={"Authorization": "Bearer {}".format(get_token())}, verify=False)
+                                headers={"Authorization": "Bearer {}".format(tk)}, verify=False)
         if response.status_code != 200:
             raise SERVER_EXCEPTION
         response_json = response.json()[0]
         print(response_json)
     except Exception as e:
         print(e)
-
-
-def get_token():
-    token = requests.post(api_home + "v1.1/authenticate", headers={"Authorization": "Basic {}".format(api_key)},
-                          verify=False)
-    return token.text

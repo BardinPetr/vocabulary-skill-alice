@@ -1,45 +1,35 @@
 # coding: utf-8
 from __future__ import unicode_literals
-
-import json
 import logging
 
+from alice_sdk import AliceRequest, AliceResponse
+from vocabulary import handle_dialog
 from flask import Flask, request
 
 app = Flask(__name__)
 
 logging.basicConfig(level=logging.DEBUG)
 
-sessionStorage = {}
+session_storage = {}
 
 
 @app.route("/", methods=['POST'])
 def main():
-    logging.info('Request: %r', request.json)
+    alice_request = AliceRequest(request.json)
+    logging.info('Request: {}'.format(alice_request))
 
-    response = {
-        "version": request.json['version'],
-        "session": request.json['session'],
-        "response": {
-            "end_session": False
-        }
-    }
+    alice_response = AliceResponse(alice_request)
 
-    handle_dialog(request.json, response)
+    user_id = alice_request.user_id
 
-    logging.info('Response: %r', response)
-
-    return json.dumps(
-        response,
-        ensure_ascii=False,
-        indent=2
+    alice_response, session_storage[user_id] = handle_dialog(
+        alice_request, alice_response, session_storage.get(user_id)
     )
 
+    logging.info('Response: {}'.format(alice_response))
 
-def handle_dialog(req, res):
-    pass
+    return alice_response.dumps()
 
 
-def getSuggests(user_id):
-    session = sessionStorage[user_id]
-    return None
+if __name__ == '__main__':
+    app.run()

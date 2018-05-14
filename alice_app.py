@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import logging
 
-from alice_sdk import AliceRequest, AliceResponse
+from libs.alice_sdk import AliceRequest, AliceResponse
 from vocabulary import handle_dialog
 from flask import Flask, request
 

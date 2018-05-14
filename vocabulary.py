@@ -9,6 +9,7 @@ morph = pymorphy2.MorphAnalyzer()
 
 
 def handle_dialog(request, response, user_storage):
+
     if request.is_new_session:
         response.set_text('Привет! Назови слово, чтобы найти его определение')
         return response, user_storage
@@ -18,7 +19,7 @@ def handle_dialog(request, response, user_storage):
         if req is None:
             response.set_text('Прости, у нас проблемы на сервере')
         else:
-            response.set_text('{} означает: {}'.format(req, run(req)))
+            response.set_text(run(req))
     return response, user_storage
 
 

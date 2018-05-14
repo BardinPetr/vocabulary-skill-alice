@@ -33,8 +33,7 @@ def run(word):
         response_json = response.json()
         text = ""
         if not data:
-            text = 'Описание недоступно.'
-            return text
+            return 'Описание недоступно.'
         for el in data[0].get('Body', []):
             items = el.get('Items')
             if items:
@@ -49,7 +48,7 @@ def run(word):
                     if node.get('IsOptional'):
                         continue
                     text = node.get('Text')
-                    return text
+                    return '{} - это {}'.format(word, text)
                     '''
                     for mrk in item.get('Markup', []):
                         for node in mrk.get('Markup', []):
@@ -64,17 +63,17 @@ def run(word):
                             if node.get('IsOptional'):
                                 continue
                             text = node.get('Text')
-                            return text
+                            return '{} - это {}'.format(word, text)
 
             else:
                 for node in el.get('Markup', []):
                     if node.get('Node') != 'Text':
                         continue
                     text = node.get('Text')
-                    return text
+                    return '{} - это {}'.format(word, text)
         if response.status_code != 200:
             raise SERVER_EXCEPTION
-        return text
+        return '{} - это {}'.format(word, text)
     except SERVER_EXCEPTION:
         return "Ошибка сервера"
     except Exception:

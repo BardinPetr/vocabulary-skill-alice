@@ -1,0 +1,1 @@
+vocabulary-skill-alice
